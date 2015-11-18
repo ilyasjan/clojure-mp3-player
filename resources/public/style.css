@@ -2,9 +2,9 @@
   padding-left:20px;
   padding-right:20px;
   padding-bottom:0px;
+  height: inherit;
   padding-top:0px;
   margin:0px;
-  height:450px;
   overflow-y:scroll;
 }
 
@@ -45,8 +45,8 @@
 
 #window {
   width:400px;
-  height:500px;
-  margin:0px;
+  height:700px;
+  margin:auto;
   padding:0px;
   overflow:hidden;
   background-color:#0D5839;
