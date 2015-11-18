@@ -8,27 +8,40 @@
   overflow-y:scroll;
 }
 
-#list li
-{
+#list::-webkit-scrollbar-track-piece{
+  /*background-color: #fff;*/
+  -webkit-border-radius: 0;
+}
+#list::-webkit-scrollbar{
+  width: 8px;
+  height: 8px;
+}
+
+#list::-webkit-scrollbar-thumb{
+  height: 50px;
+  background-color: #8E9598;
+  /* outline: 2px solid #fff; */
+  /* outline-offset: -2px; */
+  /* border: 2px solid #fff; */
+  border-radius: 4px;
+}
+
+#list li{
   border-radius:2em;
-  border-bottom-color: aqua;
   border-bottom-width: 1px;
   border-bottom-style: dashed;
   list-style:none;
   cursor:default;
-  border-width:1px;
   color:white;
-  font-family:fantasy;
+  opacity:0.3;
   height:20px;
   overflow:hidden;
   font-size:16px;
 }
 
-#list li a:hover
-             {
-
-               background-color:black;
-             }
+#list li a:hover{
+  background-color:black;
+}
 
 #window {
   width:400px;
@@ -36,26 +49,24 @@
   margin:0px;
   padding:0px;
   overflow:hidden;
-  background-color:#33ffaa;
+  background-color:#0D5839;
   border-radius:2em;
 }
-.selected{
 
-  background-color:yellow;
+.selected{
+  opacity:1 !important;
+  /*background-color:yellow;*/
 }
-#display-frame
-{
+
+#display-frame{
   padding-left:30px;
   padding-right:30px;
-  border-color:red;
-  border-width:1px;
-  border-style:solid;
   text-align:center;
   height:50px;
   vertical-align:center;
 }
-#display-content
-{
+
+#display-content{
   font-family:cursive;
   font-size:28px;
   color:yellow;
