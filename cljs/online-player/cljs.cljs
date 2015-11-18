@@ -41,7 +41,7 @@
   (let [at "data-name"
         player (dom/getElement "player")
         display (dom/getElement "display-content")
-        music-name (.-innerHTML el)
+        music-name (.-innerHTML (aget (.getElementsByTagName el "a") 0))
         music-path (str "./mp3/" (apply str (attr el at)))
         coll (js/document.getElementsByTagName "li")
         i-coll (range (.-length coll))

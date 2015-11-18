@@ -1,5 +1,6 @@
 #list{
   padding-left:20px;
+  padding-right:20px;
   padding-bottom:0px;
   padding-top:0px;
   margin:0px;
@@ -9,7 +10,7 @@
 
 #list li
 {
-
+  border-radius:2em;
   border-bottom-color: aqua;
   border-bottom-width: 1px;
   border-bottom-style: dashed;
@@ -23,15 +24,11 @@
   font-size:16px;
 }
 
-#list li a
-{
-
-}
-
 #list li a:hover
-{
-  background-color:black;
-}
+             {
+
+               background-color:black;
+             }
 
 #window {
   width:400px;
@@ -43,6 +40,7 @@
   border-radius:2em;
 }
 .selected{
+
   background-color:yellow;
 }
 #display-frame
