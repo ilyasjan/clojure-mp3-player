@@ -25978,31 +25978,17 @@ online_player.cljs.attr = function() {
 }();
 online_player.cljs.make_js_map = function make_js_map(cljmap) {
   var out = function() {
-    var obj5511 = {};
-    return obj5511;
+    var obj6031 = {};
+    return obj6031;
   }();
   cljs.core.doall.call(null, cljs.core.map.call(null, function(out) {
-    return function(p1__5507_SHARP_) {
-      return out[cljs.core.name.call(null, cljs.core.first.call(null, p1__5507_SHARP_))] = cljs.core.second.call(null, p1__5507_SHARP_);
+    return function(p1__6027_SHARP_) {
+      return out[cljs.core.name.call(null, cljs.core.first.call(null, p1__6027_SHARP_))] = cljs.core.second.call(null, p1__6027_SHARP_);
     };
   }(out), cljmap));
   return out;
 };
 online_player.cljs.jquery = $;
-online_player.cljs.ajax = function ajax(url, fun) {
-  var req = new XMLHttpRequest;
-  req["onreadystatechange"] = function(req) {
-    return function() {
-      if (cljs.core._EQ_.call(null, req.readyState, 4)) {
-        return fun.call(null, req);
-      } else {
-        return null;
-      }
-    };
-  }(req);
-  req.open("GET", url, true);
-  return req.send("");
-};
 online_player.cljs.ajax_with_jquery = function ajax_with_jquery(u, f) {
   return online_player.cljs.jquery.ajax(online_player.cljs.make_js_map.call(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "url", "url", 1014020321), u, new cljs.core.Keyword(null, "success", "success", 3441701749), f], null)));
 };
@@ -26013,31 +25999,56 @@ online_player.cljs.at = "data-name";
 online_player.cljs.get_path = function get_path(atn) {
   return[cljs.core.str("./mp3/"), cljs.core.str(atn)].join("");
 };
-online_player.cljs.click = function click(e) {
-  var el = e.currentTarget;
-  var mn = online_player.cljs.jquery.call(null, el).find("a").html();
-  var mp = online_player.cljs.get_path.call(null, online_player.cljs.attr.call(null, el, online_player.cljs.at));
-  online_player.cljs.jquery.call(null, "li").removeClass(online_player.cljs.s_class);
-  online_player.cljs.player.pause();
-  online_player.cljs.attr.call(null, online_player.cljs.player, "src", mp);
-  online_player.cljs.jquery.call(null, online_player.cljs.display).html(mn);
-  online_player.cljs.player.play();
+online_player.cljs.music_path = function music_path(p) {
+  return online_player.cljs.attr.call(null, online_player.cljs.player, "src", p);
+};
+online_player.cljs.display_text = function display_text(n) {
+  return online_player.cljs.jquery.call(null, online_player.cljs.display).html(n);
+};
+online_player.cljs.clear_selected = function clear_selected() {
+  return online_player.cljs.jquery.call(null, "li").removeClass(online_player.cljs.s_class);
+};
+online_player.cljs.make_select = function make_select(el) {
   return online_player.cljs.attr.call(null, el, "class", online_player.cljs.s_class);
+};
+online_player.cljs.update_selected = function update_selected(el) {
+  online_player.cljs.clear_selected.call(null);
+  return online_player.cljs.make_select.call(null, el);
 };
 online_player.cljs.set_html = function set_html(id, html) {
   return goog.dom.getElement(id).innerHTML = html;
+};
+online_player.cljs.get_music_name = function get_music_name(el) {
+  return online_player.cljs.jquery.call(null, el).find("a").html();
+};
+online_player.cljs.get_music_path = function get_music_path(el) {
+  return online_player.cljs.get_path.call(null, online_player.cljs.attr.call(null, el, online_player.cljs.at));
+};
+online_player.cljs.play_song = function play_song(sc) {
+  var el = online_player.cljs.jquery.call(null, [cljs.core.str("li:eq("), cljs.core.str(sc), cljs.core.str(")")].join(""))[0];
+  var mn = online_player.cljs.get_music_name.call(null, el);
+  var mp = online_player.cljs.get_music_path.call(null, el);
+  online_player.cljs.update_selected.call(null, el);
+  online_player.cljs.player.pause();
+  online_player.cljs.music_path.call(null, mp);
+  online_player.cljs.display_text.call(null, mn);
+  return online_player.cljs.player.play();
 };
 online_player.cljs.play_next_song = function play_next_song() {
   var cs = online_player.cljs.jquery.call(null, "li.selected").index();
   var len = online_player.cljs.jquery.call(null, "li").length;
   if (cs < len) {
-    return online_player.cljs.play_song.call(null, cs);
+    return online_player.cljs.play_song.call(null, cs + 1);
   } else {
-    return null;
+    return online_player.cljs.play_song.call(null, 0);
   }
 };
 online_player.cljs.onend = function onend() {
   return online_player.cljs.play_next_song.call(null);
+};
+online_player.cljs.click = function click(e) {
+  var el = e.currentTarget;
+  return online_player.cljs.play_song.call(null, online_player.cljs.jquery.call(null, el).index());
 };
 online_player.cljs.bind_event = function bind_event() {
   return goog.events.listen(online_player.cljs.player, "ended", online_player.cljs.onend);

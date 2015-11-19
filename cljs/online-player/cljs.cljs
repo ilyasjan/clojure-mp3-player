@@ -27,17 +27,6 @@
 ;; support JQuery
 (def jquery (js* "$"))
 
-;; Ajax request
-(defn ajax [url fun]
-  (let [req (js/XMLHttpRequest.)]
-    (aset req "onreadystatechange"
-          (fn []
-            (when (= (.-readyState req) 4)
-              (fun req))))
-    (.open req "GET" url true)
-    (.send req ""))
-  )
-
 (defn ajax-with-jquery[u f]
   (.ajax jquery
          (make-js-map {:url u :success f})))
@@ -51,37 +40,66 @@
 (defn get-path[atn]
   (str "./mp3/" atn))
 
-;;Click events
-(defn click[e]
-  (let [el (.-currentTarget e)
-        mn (.html (.find (jquery el) "a"))
-        mp (get-path (attr el at))]
-    (-> (jquery "li")
-        (.removeClass s-class))
-    (.pause player)
-    (attr player "src" mp)
-    (.html (jquery display) mn)
-    (.play player)
-    (attr el "class" s-class)
-    ))
+(defn music-path[p]
+  (attr player "src" p))
 
+(defn display-text[n]
+  (.html (jquery display) n)
+  )
 
-;;set html content to current id object
+(defn clear-selected[]
+  (-> (jquery "li")
+      (.removeClass s-class)))
+
+(defn make-select[el]
+  (attr el "class" s-class))
+
+(defn update-selected[el]
+  (do (clear-selected)
+      (make-select el)))
+
 (defn set-html[id html]
   (set! (.-innerHTML (dom/getElement id)) html)
   )
+
+
+(defn get-music-name[el]
+  (.html (.find (jquery el) "a"))
+  )
+
+(defn get-music-path[el]
+  (get-path (attr el at))
+  )
+
+
+(defn play-song[sc]
+  (let [el (aget (jquery (str "li:eq("sc ")")) 0)
+        mn (get-music-name el)
+        mp (get-music-path el)]
+    (update-selected el)
+    (.pause player)
+    (music-path mp)
+    (display-text mn)
+    (.play player)
+    ))
 
 (defn play-next-song[]
   "when playing end,let's play next song"
   (let [cs (.index (jquery "li.selected"))
         len (.-length (jquery "li"))]
-    (when (< cs len)
-      (play-song cs))
+    (if (< cs len)
+      (play-song (inc cs))
+      (play-song 0))
     ))
 
 (defn onend[]
-  "this is function will call by player when playing song end"
   (play-next-song))
+
+(defn click[e]
+  (let [el (.-currentTarget e)]
+    (play-song (.index (jquery el)))
+   )
+  )
 
 (defn bind-event[]
   (events/listen player "ended" onend))
