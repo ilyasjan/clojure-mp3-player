@@ -25976,6 +25976,7 @@ online_player.cljs.attr = function() {
   attr.cljs$core$IFn$_invoke$arity$3 = attr__3;
   return attr;
 }();
+online_player.cljs.jquery = $;
 online_player.cljs.ajax = function ajax(url, fun) {
   var req = new XMLHttpRequest;
   req["onreadystatechange"] = function(req) {
@@ -25990,7 +25991,11 @@ online_player.cljs.ajax = function ajax(url, fun) {
   req.open("GET", url, true);
   return req.send("");
 };
-online_player.cljs.li_click = function li_click(el) {
+online_player.cljs.ajax_with_jquery = function ajax_with_jquery(u, f) {
+  return online_player.cljs.jquery.call(null).ajax();
+};
+online_player.cljs.click = function click(e) {
+  var el = e.currentTarget;
   var at = "data-name";
   var player = goog.dom.getElement("player");
   var display = goog.dom.getElement("display-content");
@@ -25998,12 +26003,7 @@ online_player.cljs.li_click = function li_click(el) {
   var music_path = [cljs.core.str("./mp3/"), cljs.core.str(cljs.core.apply.call(null, cljs.core.str, online_player.cljs.attr.call(null, el, at)))].join("");
   var coll = document.getElementsByTagName("li");
   var i_coll = cljs.core.range.call(null, coll.length);
-  cljs.core.clj__GT_js.call(null, cljs.core.map.call(null, function(at, player, display, music_name, music_path, coll, i_coll) {
-    return function(i) {
-      var e = coll[i];
-      return online_player.cljs.attr.call(null, e, "class", "");
-    };
-  }(at, player, display, music_name, music_path, coll, i_coll), i_coll));
+  online_player.cljs.jquery.call(null, "li").removeClass("Selected");
   player.pause();
   online_player.cljs.attr.call(null, player, "src", music_path);
   display.innerText = music_name;
@@ -26013,13 +26013,12 @@ online_player.cljs.li_click = function li_click(el) {
 online_player.cljs.set_html = function set_html(id, html) {
   return goog.dom.getElement(id).innerHTML = html;
 };
+online_player.cljs.call_back = function call_back(r) {
+  var cll = document.getElementsByTagName("li");
+  online_player.cljs.set_html.call(null, "list", r.responseText);
+  return online_player.cljs.jquery.call(null, "li").click(online_player.cljs.click);
+};
 online_player.cljs.main = function main() {
-  return online_player.cljs.ajax.call(null, "./music-list", function(r) {
-    var cll = document.getElementsByTagName("li");
-    return online_player.cljs.set_html.call(null, "list", r.responseText);
-  });
+  return online_player.cljs.ajax.call(null, "./music-list", online_player.cljs.call_back);
 };
 online_player.cljs.main.call(null);
-goog.events.listen(goog.dom.getElement("display-content"), "click", function(e) {
-  return online_player.cljs.alert.call(null, "help");
-});

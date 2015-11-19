@@ -15,6 +15,8 @@
   ([el at](.getAttribute el at))
   ([el at val](.setAttribute el at val))
   )
+;; support JQuery
+(def jquery (js* "$"))
 
 ;; Ajax request
 (defn ajax [url fun]
@@ -27,10 +29,14 @@
     (.send req ""))
   )
 
+(defn ajax-with-jquery[u f]
+  (.ajax (jquery)))
 
 
-(defn li-click[el]
-  (let [at "data-name"
+;;Click events
+(defn click[e]
+  (let [el (.-currentTarget e)
+        at "data-name"
         player (dom/getElement "player")
         display (dom/getElement "display-content")
         music-name (.-innerHTML (aget (.getElementsByTagName el "a") 0))
@@ -38,11 +44,8 @@
         coll (js/document.getElementsByTagName "li")
         i-coll (range (.-length coll))
         ]
-
-    (clj->js (map
-      (fn[i](let [e (aget coll i)]
-              (attr e "class" "")))
-      i-coll))
+    (-> (jquery "li")
+        (.removeClass "Selected"))
     (.pause player)
     (attr player "src" music-path)
     (set! (.-innerText display) music-name)
@@ -50,25 +53,24 @@
     (attr el "class" "selected")
     ))
 
+
 ;;set html content to current id object
 (defn set-html[id html]
   (set! (.-innerHTML (dom/getElement id)) html)
   )
 
+;; Ajax call back function
+(defn call-back[r]
+  (let [cll (js/document.getElementsByTagName "li")]
+    (set-html "list" (.-responseText r))
+    (->
+     (jquery "li")
+     (.click click))
+    ))
+
 ;; send Ajax request to server,get music list,and set to html
 (defn main[]
-  (ajax "./music-list"
-        (fn[r]
-          (let [cll (js/document.getElementsByTagName "li")]
-            (set-html "list" (.-responseText r))))))
+  (ajax "./music-list" call-back))
 
 ;;call main function
-
 (main)
-(events/listen (dom/getElement "display-content") "click"  (fn[e](alert "help")))
-
-
-;(do (let [coll (js/document.getElementsByTagName "li")
- ;         i-coll (range (.-length coll))]
-  ;    (map (fn[i](let[e (aget coll i)](set! (.-onclick e) li-click))) i-coll)
-   ;   ))
