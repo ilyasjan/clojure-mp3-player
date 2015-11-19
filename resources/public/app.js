@@ -25976,6 +25976,18 @@ online_player.cljs.attr = function() {
   attr.cljs$core$IFn$_invoke$arity$3 = attr__3;
   return attr;
 }();
+online_player.cljs.make_js_map = function make_js_map(cljmap) {
+  var out = function() {
+    var obj5346 = {};
+    return obj5346;
+  }();
+  cljs.core.doall.call(null, cljs.core.map.call(null, function(out) {
+    return function(p1__5342_SHARP_) {
+      return out[cljs.core.name.call(null, cljs.core.first.call(null, p1__5342_SHARP_))] = cljs.core.second.call(null, p1__5342_SHARP_);
+    };
+  }(out), cljmap));
+  return out;
+};
 online_player.cljs.jquery = $;
 online_player.cljs.ajax = function ajax(url, fun) {
   var req = new XMLHttpRequest;
@@ -25992,33 +26004,39 @@ online_player.cljs.ajax = function ajax(url, fun) {
   return req.send("");
 };
 online_player.cljs.ajax_with_jquery = function ajax_with_jquery(u, f) {
-  return online_player.cljs.jquery.call(null).ajax();
+  return online_player.cljs.jquery.ajax(online_player.cljs.make_js_map.call(null, new cljs.core.PersistentArrayMap(null, 2, [new cljs.core.Keyword(null, "url", "url", 1014020321), u, new cljs.core.Keyword(null, "success", "success", 3441701749), f], null)));
+};
+online_player.cljs.player = goog.dom.getElement("player");
+online_player.cljs.display = goog.dom.getElement("display-content");
+online_player.cljs.s_class = "selected";
+online_player.cljs.at = "data-name";
+online_player.cljs.get_path = function get_path(atn) {
+  return[cljs.core.str("./mp3/"), cljs.core.str(atn)].join("");
 };
 online_player.cljs.click = function click(e) {
   var el = e.currentTarget;
-  var at = "data-name";
-  var player = goog.dom.getElement("player");
-  var display = goog.dom.getElement("display-content");
-  var music_name = el.getElementsByTagName("a")[0].innerHTML;
-  var music_path = [cljs.core.str("./mp3/"), cljs.core.str(cljs.core.apply.call(null, cljs.core.str, online_player.cljs.attr.call(null, el, at)))].join("");
-  var coll = document.getElementsByTagName("li");
-  var i_coll = cljs.core.range.call(null, coll.length);
-  online_player.cljs.jquery.call(null, "li").removeClass("Selected");
-  player.pause();
-  online_player.cljs.attr.call(null, player, "src", music_path);
-  display.innerText = music_name;
-  player.play();
-  return online_player.cljs.attr.call(null, el, "class", "selected");
+  var mn = online_player.cljs.jquery.call(null, el).find("a").html();
+  var mp = online_player.cljs.get_path.call(null, online_player.cljs.attr.call(null, el, online_player.cljs.at));
+  online_player.cljs.jquery.call(null, "li").removeClass(online_player.cljs.s_class);
+  online_player.cljs.player.pause();
+  online_player.cljs.attr.call(null, online_player.cljs.player, "src", mp);
+  online_player.cljs.jquery.call(null, online_player.cljs.display).html(mn);
+  online_player.cljs.player.play();
+  return online_player.cljs.attr.call(null, el, "class", online_player.cljs.s_class);
 };
 online_player.cljs.set_html = function set_html(id, html) {
   return goog.dom.getElement(id).innerHTML = html;
 };
+online_player.cljs.bind_event = function bind_event() {
+  return online_player.cljs.player.onended = function() {
+    return online_player.cljs.alert.call(null, "Soga");
+  };
+};
 online_player.cljs.call_back = function call_back(r) {
-  var cll = document.getElementsByTagName("li");
-  online_player.cljs.set_html.call(null, "list", r.responseText);
+  online_player.cljs.set_html.call(null, "list", r);
   return online_player.cljs.jquery.call(null, "li").click(online_player.cljs.click);
 };
 online_player.cljs.main = function main() {
-  return online_player.cljs.ajax.call(null, "./music-list", online_player.cljs.call_back);
+  return online_player.cljs.ajax_with_jquery.call(null, "./music-list", online_player.cljs.call_back);
 };
 online_player.cljs.main.call(null);

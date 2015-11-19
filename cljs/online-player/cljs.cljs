@@ -15,6 +15,15 @@
   ([el at](.getAttribute el at))
   ([el at val](.setAttribute el at val))
   )
+
+
+(defn make-js-map
+  "makes a javascript map from a clojure one"
+  [cljmap]
+  (let [out (js-obj)]
+    (doall (map #(aset out (name (first %)) (second %)) cljmap))
+    out))
+
 ;; support JQuery
 (def jquery (js* "$"))
 
@@ -30,27 +39,30 @@
   )
 
 (defn ajax-with-jquery[u f]
-  (.ajax (jquery)))
+  (.ajax jquery
+         (make-js-map {:url u :success f})))
 
+
+(def player (dom/getElement "player"))
+(def display (dom/getElement "display-content"))
+(def s-class "selected")
+(def at "data-name")
+
+(defn get-path[atn]
+  (str "./mp3/" atn))
 
 ;;Click events
 (defn click[e]
   (let [el (.-currentTarget e)
-        at "data-name"
-        player (dom/getElement "player")
-        display (dom/getElement "display-content")
-        music-name (.-innerHTML (aget (.getElementsByTagName el "a") 0))
-        music-path (str "./mp3/" (apply str (attr el at)))
-        coll (js/document.getElementsByTagName "li")
-        i-coll (range (.-length coll))
-        ]
+        mn (.html (.find (jquery el) "a"))
+        mp (get-path (attr el at))]
     (-> (jquery "li")
-        (.removeClass "Selected"))
+        (.removeClass s-class))
     (.pause player)
-    (attr player "src" music-path)
-    (set! (.-innerText display) music-name)
+    (attr player "src" mp)
+    (.html (jquery display) mn)
     (.play player)
-    (attr el "class" "selected")
+    (attr el "class" s-class)
     ))
 
 
@@ -59,18 +71,21 @@
   (set! (.-innerHTML (dom/getElement id)) html)
   )
 
+(defn bind-event[]
+  (set! (.-onended player) #(alert "Soga")))
+
 ;; Ajax call back function
 (defn call-back[r]
-  (let [cll (js/document.getElementsByTagName "li")]
-    (set-html "list" (.-responseText r))
-    (->
-     (jquery "li")
-     (.click click))
-    ))
+  (do (set-html "list" r)
+      (.click (jquery "li") click)
+      ;;(bind-event)
+   ))
+
+
 
 ;; send Ajax request to server,get music list,and set to html
 (defn main[]
-  (ajax "./music-list" call-back))
+  (ajax-with-jquery "./music-list" call-back))
 
-;;call main function
+;; main function
 (main)
