@@ -25978,12 +25978,12 @@ online_player.cljs.attr = function() {
 }();
 online_player.cljs.make_js_map = function make_js_map(cljmap) {
   var out = function() {
-    var obj5346 = {};
-    return obj5346;
+    var obj5511 = {};
+    return obj5511;
   }();
   cljs.core.doall.call(null, cljs.core.map.call(null, function(out) {
-    return function(p1__5342_SHARP_) {
-      return out[cljs.core.name.call(null, cljs.core.first.call(null, p1__5342_SHARP_))] = cljs.core.second.call(null, p1__5342_SHARP_);
+    return function(p1__5507_SHARP_) {
+      return out[cljs.core.name.call(null, cljs.core.first.call(null, p1__5507_SHARP_))] = cljs.core.second.call(null, p1__5507_SHARP_);
     };
   }(out), cljmap));
   return out;
@@ -26027,14 +26027,25 @@ online_player.cljs.click = function click(e) {
 online_player.cljs.set_html = function set_html(id, html) {
   return goog.dom.getElement(id).innerHTML = html;
 };
+online_player.cljs.play_next_song = function play_next_song() {
+  var cs = online_player.cljs.jquery.call(null, "li.selected").index();
+  var len = online_player.cljs.jquery.call(null, "li").length;
+  if (cs < len) {
+    return online_player.cljs.play_song.call(null, cs);
+  } else {
+    return null;
+  }
+};
+online_player.cljs.onend = function onend() {
+  return online_player.cljs.play_next_song.call(null);
+};
 online_player.cljs.bind_event = function bind_event() {
-  return online_player.cljs.player.onended = function() {
-    return online_player.cljs.alert.call(null, "Soga");
-  };
+  return goog.events.listen(online_player.cljs.player, "ended", online_player.cljs.onend);
 };
 online_player.cljs.call_back = function call_back(r) {
   online_player.cljs.set_html.call(null, "list", r);
-  return online_player.cljs.jquery.call(null, "li").click(online_player.cljs.click);
+  online_player.cljs.jquery.call(null, "li").click(online_player.cljs.click);
+  return online_player.cljs.bind_event.call(null);
 };
 online_player.cljs.main = function main() {
   return online_player.cljs.ajax_with_jquery.call(null, "./music-list", online_player.cljs.call_back);

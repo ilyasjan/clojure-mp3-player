@@ -71,17 +71,27 @@
   (set! (.-innerHTML (dom/getElement id)) html)
   )
 
+(defn play-next-song[]
+  "when playing end,let's play next song"
+  (let [cs (.index (jquery "li.selected"))
+        len (.-length (jquery "li"))]
+    (when (< cs len)
+      (play-song cs))
+    ))
+
+(defn onend[]
+  "this is function will call by player when playing song end"
+  (play-next-song))
+
 (defn bind-event[]
-  (set! (.-onended player) #(alert "Soga")))
+  (events/listen player "ended" onend))
 
 ;; Ajax call back function
 (defn call-back[r]
   (do (set-html "list" r)
       (.click (jquery "li") click)
-      ;;(bind-event)
+      (bind-event)
    ))
-
-
 
 ;; send Ajax request to server,get music list,and set to html
 (defn main[]
