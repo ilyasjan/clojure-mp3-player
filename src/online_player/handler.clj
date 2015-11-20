@@ -9,7 +9,6 @@
 
 (def path "resources/public/mp3")
 
-
 (defn get-file-names[p]
   (->>(file-seq (clojure.java.io/file p))
       (map #(.getName %))
