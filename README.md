@@ -1,6 +1,14 @@
 # online-player
 
-FIXME
+后台：Clojure提供以保存在resources/public/mp3/目录下的
+mp3文件名的列表
+;;;
+<li data-name='file url.mp3'> <a>file name </a></li>
+;;;
+---
+###嵌入的技术：
+1. JQuery
+2. BootStrap
 
 ## Prerequisites
 

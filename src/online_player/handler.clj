@@ -10,18 +10,15 @@
 (def path "resources/public/mp3")
 
 
+(defn get-file-names[p]
+  (->>(file-seq (clojure.java.io/file p))
+      (map #(.getName %))
+      (filter #(.contains % ".mp3"))))
+
 (defn url-encode [string]
   (some->
    string
    str (URLEncoder/encode "UTF-8") (.replace "+" "%20")))
-
-(defn get-file-list[]
-  (file-seq (clojure.java.io/file path)))
-
-(defn get-file-names[]
-  (->>(get-file-list)
-      (map #(.getName %))
-      (filter #(.contains % ".mp3"))))
 
 (defn get-li-item [names]
   (str "<li data-name='" (url-encode names) "' ><a>"
@@ -30,15 +27,11 @@
   )
 
 (defn get-html-list[list]
-  (map (fn[c]
-         (let [names (apply str c)]
-           (get-li-item names)
-           ))
-       list))
+  (map #(get-li-item (apply str %)) list))
 
 (defroutes app-routes
   (GET "/" [] (slurp "resources/public/index.html"))
-  (GET "/music-list" [] (apply str (get-html-list (get-file-names))))
+  (GET "/music-list" [] (apply str (get-html-list (get-file-names path))))
   (route/not-found "Not Found"))
 
 
